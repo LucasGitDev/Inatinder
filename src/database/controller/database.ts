@@ -15,7 +15,7 @@ export class Database {
   }
 
   async doQuery(queryToDo) {
-    const pro = new Promise((resolve, reject) => {
+    const pro = new Promise((resolve) => {
       const query = queryToDo;
       this.connection.query(query, function (err, result) {
         if (err) throw err; // GESTION D'ERREURS
@@ -27,7 +27,7 @@ export class Database {
     });
   }
   async doQueryParams(queryToDo, array) {
-    const pro = new Promise((resolve, reject) => {
+    const pro = new Promise((resolve) => {
       const query = queryToDo;
       this.connection.query(query, array, function (err, result) {
         if (err) throw err; // GESTION D'ERREURS
