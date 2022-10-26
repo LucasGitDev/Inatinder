@@ -15,16 +15,20 @@ export class Database {
   }
 
   async doQuery(queryToDo): Promise<any> {
-    const pro = new Promise((resolve) => {
-      const query = queryToDo;
-      this.connection.query(query, function (err, result) {
-        if (err) throw err; // GESTION D'ERREURS
-        resolve(result);
+    try {
+      const pro = new Promise((resolve) => {
+        const query = queryToDo;
+        this.connection.query(query, function (err, result) {
+          if (err) throw err; // GESTION D'ERREURS
+          resolve(result);
+        });
       });
-    });
-    return pro.then((val) => {
-      return val;
-    });
+      return pro.then((val) => {
+        return val;
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
   async doQueryParams(queryToDo, array) {
     const pro = new Promise((resolve) => {

@@ -67,7 +67,11 @@ export class Users {
     const result = await this.db.doQuery(
       `select user.*, ui.course, ui.period, ui.hometown, ui.biography FROM user LEFT JOIN user_infos ui ON user.user_infos_id = ui.id where user.id = ${id} ;`,
     );
-    return result[0];
+
+    const userPics = await this.db.doQuery(
+      `select id from user_pics where user_id = ${id} ;`,
+    );
+    return { ...result[0], pics: userPics.map((pic) => pic.id) };
   }
 
   static async findByEmail(email: string) {

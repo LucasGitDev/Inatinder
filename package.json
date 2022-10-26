@@ -25,6 +25,8 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "^1.2.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@types/multer": "^1.4.7",
+    "@types/sharp": "^0.31.0",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -34,7 +36,8 @@
     "reflect-metadata": "^0.1.13",
     "require-all": "^3.0.0",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "sharp": "^0.31.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
