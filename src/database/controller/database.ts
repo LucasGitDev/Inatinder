@@ -14,7 +14,7 @@ export class Database {
     });
   }
 
-  async doQuery(queryToDo) {
+  async doQuery(queryToDo): Promise<any> {
     const pro = new Promise((resolve) => {
       const query = queryToDo;
       this.connection.query(query, function (err, result) {

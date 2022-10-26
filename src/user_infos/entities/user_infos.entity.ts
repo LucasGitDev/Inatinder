@@ -68,4 +68,11 @@ export class UserInfos {
     );
     return result;
   }
+
+  static async haveUser(id: number) {
+    const result = await this.db.doQuery(
+      `SELECT * FROM user WHERE user_infos_id = ${id}`,
+    );
+    return result[0];
+  }
 }
