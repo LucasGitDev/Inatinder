@@ -91,9 +91,10 @@ ENGINE = InnoDB;
 -- Table `inatinder_dev`.`user_frequent_places`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `inatinder_dev`.`user_frequent_places` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `places_id` INT NOT NULL,
-  PRIMARY KEY (`user_id`, `places_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_user_has_places_places1_idx` (`places_id` ASC),
   INDEX `fk_user_has_places_user1_idx` (`user_id` ASC),
   CONSTRAINT `fk_user_has_places_user1`

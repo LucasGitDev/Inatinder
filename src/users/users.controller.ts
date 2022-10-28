@@ -49,4 +49,10 @@ export class UsersController {
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
   }
+
+  @UseGuards(AuthMiddleware)
+  @Post('addPlace/:id/:placeId')
+  async addPlace(@Param('id') id: string, @Param('placeId') placeId: string) {
+    return await this.usersService.addPlace(id, placeId);
+  }
 }

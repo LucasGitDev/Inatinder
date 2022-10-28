@@ -50,4 +50,8 @@ export class UsersService {
   async remove(id: number) {
     return await Users.delete(id);
   }
+
+  async addPlace(userId: string, placeId: string) {
+    return await Users.addPlace(userId, placeId);
+  }
 }

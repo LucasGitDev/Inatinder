@@ -3,7 +3,7 @@ const mysql = require('mysql');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-export class Database {
+class Database {
   connection: any;
   constructor() {
     this.connection = mysql.createConnection({
@@ -43,3 +43,5 @@ export class Database {
     });
   }
 }
+
+export default new Database();

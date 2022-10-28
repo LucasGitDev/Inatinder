@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { Database } from 'src/database/controller/database';
-import BCryptHashProvider from 'src/providers/hashProvider';
-import { UserInfos } from 'src/user_infos/entities/user_infos.entity';
+import Database from '../../database/controller/database';
+import { Places } from '../../places/entities/place.entity';
+import BCryptHashProvider from '../../providers/hashProvider';
+import { UserInfos } from '../../user_infos/entities/user_infos.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 export class Users {
@@ -10,8 +11,7 @@ export class Users {
   email: string;
   password: string;
   userInfos?: UserInfos;
-
-  private static db = new Database();
+  places?: Places[];
 
   static fromJson(json: any) {
     const user = new Users();
@@ -49,14 +49,12 @@ export class Users {
       userInfos || null
     })`;
 
-    const ret = await this.db.doQuery(query);
+    const ret = await Database.doQuery(query);
     return { id: ret.insertId, name, email, password, userInfos };
   }
 
   static async findAll() {
-    // const result = await this.db.doQuery('SELECT * FROM user ');
-    // select user and join user_infos if relation exists
-    const result = await this.db.doQuery(
+    const result = await Database.doQuery(
       'SELECT user.*, ui.course, ui.period, ui.hometown, ui.biography FROM user LEFT JOIN user_infos ui ON user.user_infos_id = ui.id order by user.id',
     );
 
@@ -64,18 +62,24 @@ export class Users {
   }
 
   static async findById(id: number) {
-    const result = await this.db.doQuery(
+    const result = await Database.doQuery(
       `select user.*, ui.course, ui.period, ui.hometown, ui.biography FROM user LEFT JOIN user_infos ui ON user.user_infos_id = ui.id where user.id = ${id} ;`,
     );
 
-    const userPics = await this.db.doQuery(
+    const userPics = await Database.doQuery(
       `select id from user_pics where user_id = ${id} ;`,
     );
-    return { ...result[0], pics: userPics.map((pic) => pic.id) };
+
+    const userPlaces = await Places.findByUserId(id);
+    return {
+      ...result[0],
+      pics: userPics.map((pic) => pic.id),
+      places: userPlaces,
+    };
   }
 
   static async findByEmail(email: string) {
-    const result = await this.db.doQuery(
+    const result = await Database.doQuery(
       `SELECT * FROM user WHERE email = '${email}'`,
     );
     return result[0];
@@ -109,7 +113,7 @@ export class Users {
       userInfos ? ' user_infos_id = ' + userInfos + ',' : ''
     }`;
 
-    const result = await this.db.doQuery(
+    const result = await Database.doQuery(
       query.slice(0, -1) + ` WHERE id = ${id}`,
     );
     return result;
@@ -121,8 +125,37 @@ export class Users {
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
     }
 
-    const result = await this.db.doQuery(
+    const result = await Database.doQuery(
       `DELETE FROM user_infos WHERE id = ${user.user_infos_id}`,
+    );
+
+    return result;
+  }
+
+  static async addPlace(userId: string, placeId: string) {
+    const user = await this.findById(Number(userId));
+    if (!user) {
+      throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+    }
+
+    const place = await Places.findById(Number(placeId));
+    if (!place) {
+      throw new HttpException('PLACE_NOT_FOUND', HttpStatus.NOT_FOUND);
+    }
+
+    // check if user already have this place
+    const userPlaces = await Database.doQuery(
+      `SELECT * FROM user_frequent_places WHERE user_id = ${userId} AND places_id = ${placeId}`,
+    );
+    if (userPlaces.length > 0) {
+      throw new HttpException(
+        'USER_ALREADY_HAVE_THIS_PLACE',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const result = await Database.doQuery(
+      `INSERT INTO inatinder_dev.user_frequent_places (user_id, places_id) VALUES('${userId}', '${placeId}')`,
     );
 
     return result;
