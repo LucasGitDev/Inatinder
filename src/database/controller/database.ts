@@ -19,7 +19,7 @@ class Database {
       const pro = new Promise((resolve) => {
         const query = queryToDo;
         this.connection.query(query, function (err, result) {
-          if (err) throw err; // GESTION D'ERREURS
+          if (err) throw err;
           resolve(result);
         });
       });
@@ -34,7 +34,7 @@ class Database {
     const pro = new Promise((resolve) => {
       const query = queryToDo;
       this.connection.query(query, array, function (err, result) {
-        if (err) throw err; // GESTION D'ERREURS
+        if (err) throw err;
         resolve(result);
       });
     });
